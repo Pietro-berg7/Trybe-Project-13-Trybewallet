@@ -84,7 +84,7 @@ class Login extends React.Component {
 
 // https://redux.js.org/faq/design-decisions#why-doesnt-mapdispatchtoprops-allow-use-of-return-values-from-getstate-or-mapstatetoprops
 const mapDispatchToProps = (dispatch) => ({
-  user: (email) => dispatch(submitUser(email)),
+  user: (state) => dispatch(submitUser(state)),
 });
 
 Login.propTypes = {
