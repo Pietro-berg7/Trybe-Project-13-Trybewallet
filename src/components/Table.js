@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 class Table extends Component {
   render() {
+    const { expenses } = this.props;
+    const ONE_THOUSAND = 1000;
+
     return (
       <div>
         <table>
@@ -18,10 +22,52 @@ class Table extends Component {
               <th>Editar/Excluir</th>
             </tr>
           </thead>
+          <tbody>
+            { expenses.map((expense) => (
+              <tr key={ expense.id }>
+                <td>{ expense.description }</td>
+                <td>{ expense.tag }</td>
+                <td>{ expense.method }</td>
+                <td>{ Number(expense.value).toFixed(2) }</td>
+                <td>{ expense.exchangeRates[expense.currency].name }</td>
+                <td>
+                  {
+                    Number(expense.exchangeRates[expense.currency].ask).toFixed(2)
+                  }
+                </td>
+                <td>
+                  {
+                    (expense.currency === 'BTC')
+                      ? ((
+                        Number(expense.value)
+                        * Number(expense.exchangeRates[expense.currency]
+                          .ask)) * ONE_THOUSAND)
+                        .toFixed(2)
+                      : (
+                        Number(expense.value)
+                        * Number(expense.exchangeRates[expense.currency].ask))
+                        .toFixed(2)
+                  }
+                </td>
+                <td>Real</td>
+                <td>
+                  <button type="button">Editar/Excluir</button>
+                </td>
+              </tr>
+            )) }
+          </tbody>
         </table>
       </div>
     );
   }
 }
 
-export default Table;
+const mapStateToProps = (state) => ({
+  expenses: state.wallet.expenses,
+});
+
+Table.propTypes = {
+  expenses: Array,
+}.isRequired;
+
+export default connect(mapStateToProps)(Table);
