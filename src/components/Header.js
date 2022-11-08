@@ -7,7 +7,13 @@ class Header extends Component {
     const { expenses } = this.props;
     const total = expenses.reduce((acc, element) => {
       const { value } = element;
-      const sum = value * element.exchangeRates[element.currency].ask;
+      const ONE_THOUSAND = 1000;
+      let sum = 0;
+      if (element.currency === 'BTC') {
+        sum = value * (element.exchangeRates[element.currency].ask * ONE_THOUSAND);
+      } else {
+        sum = value * element.exchangeRates[element.currency].ask;
+      }
       acc += sum;
       return acc;
     }, 0);
