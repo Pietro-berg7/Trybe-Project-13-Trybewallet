@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { func, array } from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchCurrencies, submitExpense, totalValue } from '../redux/actions';
+import { fetchCurrencies, submitExpense } from '../redux/actions';
 import requestCurrencies from '../services/currencyAPI';
 
 class WalletForm extends Component {
@@ -9,9 +9,8 @@ class WalletForm extends Component {
     value: '',
     description: '',
     currency: 'USD',
-    method: 'dinheiro',
-    tag: 'alimentacao',
-    total: '',
+    method: 'Dinheiro',
+    tag: 'Alimentação',
   };
 
   componentDidMount() {
@@ -24,7 +23,7 @@ class WalletForm extends Component {
   };
 
   expenses = async () => {
-    const { expense, totalExpenses } = this.props;
+    const { expense } = this.props;
     const response = await requestCurrencies();
     delete response.USDT;
 
@@ -34,12 +33,7 @@ class WalletForm extends Component {
       currency,
       method,
       tag,
-      total,
     } = this.state;
-
-    const { ask } = response[currency];
-    const sum = Number(value) * Number(ask);
-    const totalSum = Number(total) + sum;
 
     const localState = {
       value,
@@ -50,11 +44,6 @@ class WalletForm extends Component {
       exchangeRates: response,
     };
     expense(localState);
-
-    const localStateTotal = {
-      total: totalSum,
-    };
-    totalExpenses(localStateTotal);
 
     this.setState({
       value: '',
@@ -159,7 +148,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   getCurrencies: () => dispatch(fetchCurrencies()),
   expense: (state) => dispatch(submitExpense(state)),
-  totalExpenses: (state) => dispatch(totalValue(state)),
 });
 
 WalletForm.propTypes = {

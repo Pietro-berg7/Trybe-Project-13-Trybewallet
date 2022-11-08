@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { deleteExpense } from '../redux/actions';
 
 class Table extends Component {
+  handleRemove = ({ target: { name } }) => {
+    const { expenses, dispatch } = this.props;
+    const newExpenses = expenses.filter((expense) => expense.id !== Number(name));
+    dispatch(deleteExpense(newExpenses));
+  };
+
   render() {
     const { expenses } = this.props;
     const ONE_THOUSAND = 1000;
@@ -32,7 +39,13 @@ class Table extends Component {
                 <td>{ expense.exchangeRates[expense.currency].name }</td>
                 <td>
                   {
-                    Number(expense.exchangeRates[expense.currency].ask).toFixed(2)
+                    (expense.currency === 'BTC')
+                      ? ((
+                        Number(expense.exchangeRates[expense.currency]
+                          .ask)) * ONE_THOUSAND)
+                        .toFixed(2)
+                      : (
+                        Number(expense.exchangeRates[expense.currency].ask).toFixed(2))
                   }
                 </td>
                 <td>
@@ -51,7 +64,14 @@ class Table extends Component {
                 </td>
                 <td>Real</td>
                 <td>
-                  <button type="button">Editar/Excluir</button>
+                  <button
+                    data-testid="delete-btn"
+                    type="button"
+                    name={ expense.id }
+                    onClick={ this.handleRemove }
+                  >
+                    Excluir
+                  </button>
                 </td>
               </tr>
             )) }
@@ -64,6 +84,7 @@ class Table extends Component {
 
 const mapStateToProps = (state) => ({
   expenses: state.wallet.expenses,
+  totalExpenses: state.wallet.totalExpenses,
 });
 
 Table.propTypes = {

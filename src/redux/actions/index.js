@@ -5,7 +5,7 @@ export const LOGIN_REQUEST = 'LOGIN_REQUEST';
 export const CURRENCY_REQUEST = 'CURRENCY_REQUEST';
 export const EXPENSE = 'EXPENSE';
 export const SUBMIT_EXPENSE = 'SUBMIT_EXPENSE';
-export const TOTAL_VALUE = 'TOTAL_VALUE';
+export const DELETE_EXPENSE = 'DELETE_EXPENSE';
 
 export const submitUser = (payload) => ({
   type: LOGIN_REQUEST,
@@ -28,7 +28,7 @@ export const submitExpense = (payload) => ({
   payload,
 });
 
-export const totalValue = (payload) => ({
-  type: TOTAL_VALUE,
+export const deleteExpense = (payload) => ({
+  type: DELETE_EXPENSE,
   payload,
 });
