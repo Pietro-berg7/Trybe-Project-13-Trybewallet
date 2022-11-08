@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { func, array } from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchCurrencies, submitExpense } from '../redux/actions';
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#named_import
+import {
+  fetchCurrencies, submitExpense, submitEdit as submitEditFunction,
+} from '../redux/actions';
 import requestCurrencies from '../services/currencyAPI';
 
 class WalletForm extends Component {
@@ -20,6 +23,34 @@ class WalletForm extends Component {
   currencies = async () => {
     const { getCurrencies } = this.props;
     await getCurrencies();
+  };
+
+  editExpenses = async () => {
+    const { expenses, editId, submitEdit } = this.props;
+    const arrToEdit = expenses.find((expense) => expense.id === editId);
+
+    const {
+      value,
+      description,
+      currency,
+      method,
+      tag,
+    } = this.state;
+
+    const arrEdit = {
+      id: editId,
+      value,
+      description,
+      currency,
+      method,
+      tag,
+      exchangeRates: arrToEdit.exchangeRates,
+    };
+
+    const deleteArrPosition = expenses.filter((expense) => expense.id !== editId);
+    submitEdit(deleteArrPosition);
+    const newExpenses = [...deleteArrPosition, arrEdit];
+    submitEdit(newExpenses.sort((a, b) => a.id - b.id));
   };
 
   expenses = async () => {
@@ -62,7 +93,7 @@ class WalletForm extends Component {
   };
 
   render() {
-    const { currencies } = this.props;
+    const { currencies, edit } = this.props;
     const { value, description, currency, method, tag } = this.state;
 
     return (
@@ -128,14 +159,26 @@ class WalletForm extends Component {
             <option value="Saúde">Saúde</option>
           </select>
         </label>
-        <button
-          type="button"
-          onClick={ () => {
-            this.expenses();
-          } }
-        >
-          Adicionar despesa
-        </button>
+        { edit
+          ? (
+            <button
+              type="button"
+              onClick={ () => {
+                this.editExpenses();
+              } }
+            >
+              Editar despesa
+            </button>)
+          : (
+            <button
+              type="button"
+              onClick={ () => {
+                this.expenses();
+              } }
+            >
+              Adicionar despesa
+            </button>
+          ) }
       </div>
     );
   }
@@ -143,11 +186,15 @@ class WalletForm extends Component {
 
 const mapStateToProps = (state) => ({
   currencies: state.wallet.currencies,
+  edit: state.wallet.edit,
+  editId: state.wallet.editId,
+  expenses: state.wallet.expenses,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   getCurrencies: () => dispatch(fetchCurrencies()),
   expense: (state) => dispatch(submitExpense(state)),
+  submitEdit: (newExpenses) => dispatch(submitEditFunction(newExpenses)),
 });
 
 WalletForm.propTypes = {

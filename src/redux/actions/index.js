@@ -6,6 +6,8 @@ export const CURRENCY_REQUEST = 'CURRENCY_REQUEST';
 export const EXPENSE = 'EXPENSE';
 export const SUBMIT_EXPENSE = 'SUBMIT_EXPENSE';
 export const DELETE_EXPENSE = 'DELETE_EXPENSE';
+export const EDIT_EXPENSE = 'EDIT_EXPENSE';
+export const SUBMIT_EDIT = 'SUBMIT_EDIT';
 
 export const submitUser = (payload) => ({
   type: LOGIN_REQUEST,
@@ -30,5 +32,15 @@ export const submitExpense = (payload) => ({
 
 export const deleteExpense = (payload) => ({
   type: DELETE_EXPENSE,
+  payload,
+});
+
+export const editExpense = (payload) => ({
+  type: EDIT_EXPENSE,
+  payload,
+});
+
+export const submitEdit = (payload) => ({
+  type: SUBMIT_EDIT,
   payload,
 });

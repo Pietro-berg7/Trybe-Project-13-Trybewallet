@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { deleteExpense } from '../redux/actions';
+import { array } from 'prop-types';
+import { deleteExpense, editExpense } from '../redux/actions';
 
 class Table extends Component {
   handleRemove = ({ target: { name } }) => {
@@ -10,7 +11,7 @@ class Table extends Component {
   };
 
   render() {
-    const { expenses } = this.props;
+    const { expenses, dispatch } = this.props;
     const ONE_THOUSAND = 1000;
 
     return (
@@ -65,6 +66,16 @@ class Table extends Component {
                 <td>Real</td>
                 <td>
                   <button
+                    data-testid="edit-btn"
+                    type="button"
+                    name={ expense.id }
+                    onClick={ () => {
+                      dispatch(editExpense(expense.id));
+                    } }
+                  >
+                    Editar
+                  </button>
+                  <button
                     data-testid="delete-btn"
                     type="button"
                     name={ expense.id }
@@ -88,7 +99,7 @@ const mapStateToProps = (state) => ({
 });
 
 Table.propTypes = {
-  expenses: Array,
+  expenses: array,
 }.isRequired;
 
 export default connect(mapStateToProps)(Table);
